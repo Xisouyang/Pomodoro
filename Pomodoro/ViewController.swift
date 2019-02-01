@@ -52,7 +52,7 @@ class ViewController: UIViewController {
        
 
         resetAll()
-        
+        print(intervals[currentInterval])
     }
     
     // MARK: Update UI
@@ -62,6 +62,18 @@ class ViewController: UIViewController {
         for tomatoIcon in tomatoImages {
             tomatoIcon.alpha = currentTomato <= tomatoes ? 1.0 : 0.2
             currentTomato += 1
+        }
+    }
+
+    func updateMsgLabel() {
+        if intervals[currentInterval] == .Pomodoro {
+            if currentInterval < 1 {
+                messageLabel.text = "Ready to work"
+            } else {
+                messageLabel.text = "Taking a Break"
+            }
+        } else {
+            messageLabel.text = "Pomodoro session. Do not disturb."
         }
     }
     
@@ -79,6 +91,8 @@ class ViewController: UIViewController {
         if timer.isValid {
          // Timer running
             
+            print("here")
+            
          // ACTION: Change the button’s title to “Continue”
          // ACTION: Enable the reset button
          // ACTION: Pause the timer, call the method pauseTimer
@@ -91,9 +105,11 @@ class ViewController: UIViewController {
          // Timer stopped or hasn't started
          // ACTION: Change the button’s title to “Pause”
          // ACTION: Disable the Reset button
+            
             sender.setTitle("Pause", for: .normal)
             resetButton.isEnabled = false
-            print(timer.isValid)
+            updateMsgLabel()
+//            print(timer.isValid)
            
             
             if currentInterval == 0 && timeRemaining == pomodoroDuration {
@@ -105,7 +121,7 @@ class ViewController: UIViewController {
             } else {
                 // We are in the middle of a cycle
                 // ACTION: Resume the timer.
-                runTimer()
+                startTimer()
             }
         }
     }
@@ -131,9 +147,9 @@ class ViewController: UIViewController {
     func startTimer() {
         //ACTION: create the timer, selector should be runTimer()
         timer = Timer.scheduledTimer(timeInterval: 1.0, target: self, selector: #selector(runTimer), userInfo: nil, repeats: true)
-        print(timer.isValid)
     }
     
+    // Constantly being run
     @objc func runTimer() {
         if timeRemaining > 0 {
             timeRemaining -= 1
