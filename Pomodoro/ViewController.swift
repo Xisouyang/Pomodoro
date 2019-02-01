@@ -46,6 +46,9 @@ class ViewController: UIViewController {
         super.viewDidLoad()
 
         //ACTION: Set button actions for startPauseButton, resetButton and closeButton
+        startPauseButton.addTarget(self, action: #selector(startPauseButtonPressed(_:)), for: .touchUpInside)
+        resetButton.addTarget(self, action: #selector(resetButtonPressed(_:)), for: .touchUpInside)
+        closeButton.addTarget(self, action: #selector(closeButtonPressed(sender:)), for: .touchUpInside)
        
 
         resetAll()
@@ -62,6 +65,7 @@ class ViewController: UIViewController {
         }
     }
     
+    // Resets clock's time to what is currently set
     func updateTime() {
         let (minutes, seconds) = minutesAndSeconds(from: timeRemaining)
         let min = formatNumber(minutes)
@@ -74,26 +78,34 @@ class ViewController: UIViewController {
     @objc func startPauseButtonPressed(_ sender: UIButton) {
         if timer.isValid {
          // Timer running
+            
          // ACTION: Change the button’s title to “Continue”
          // ACTION: Enable the reset button
          // ACTION: Pause the timer, call the method pauseTimer
             
+            sender.setTitle("Continue", for: .normal)
+            resetButton.isEnabled = true
+            pauseTimer()
            
         } else {
          // Timer stopped or hasn't started
          // ACTION: Change the button’s title to “Pause”
          // ACTION: Disable the Reset button
-            
+            sender.setTitle("Pause", for: .normal)
+            resetButton.isEnabled = false
+            print(timer.isValid)
            
             
             if currentInterval == 0 && timeRemaining == pomodoroDuration {
                 // We are at the start of a cycle
                 // ACTION: begin the cycle of intervals
+                startTimer()
+                print(timer.isValid)
                 
             } else {
                 // We are in the middle of a cycle
                 // ACTION: Resume the timer.
-                
+                runTimer()
             }
         }
     }
@@ -105,17 +117,21 @@ class ViewController: UIViewController {
         }
         
         //ACTION: call the reset method
-        
+        resetAll()
     }
 
     //ACTION: add the method to dismiss the view controller
+    @objc func closeButtonPressed(sender: UIButton) {
+        print("Close button pressed")
+    }
     
     
     // MARK: Time Manipulation
     
     func startTimer() {
         //ACTION: create the timer, selector should be runTimer()
-        
+        timer = Timer.scheduledTimer(timeInterval: 1.0, target: self, selector: #selector(runTimer), userInfo: nil, repeats: true)
+        print(timer.isValid)
     }
     
     @objc func runTimer() {
