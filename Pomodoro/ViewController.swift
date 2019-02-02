@@ -139,6 +139,7 @@ class ViewController: UIViewController {
     //ACTION: add the method to dismiss the view controller
     @objc func closeButtonPressed(sender: UIButton) {
         print("Close button pressed")
+        dismiss(animated: true, completion: nil)
     }
     
     
@@ -196,6 +197,7 @@ class ViewController: UIViewController {
         } else {
             // If all intervals are complete, reset all.
             // ACTION: Post Notification
+            NotificationCenter.default.post(name: .finishedCycle, object: nil)
             resetAll()
         }
     }
@@ -223,4 +225,8 @@ class ViewController: UIViewController {
             return layer.cornerRadius
         }
     }
+}
+
+extension Notification.Name {
+    static let finishedCycle = NSNotification.Name("finishedCycle")
 }
